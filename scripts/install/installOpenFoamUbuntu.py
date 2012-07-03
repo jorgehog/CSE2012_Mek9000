@@ -35,7 +35,7 @@ def __configBashRC():
 	bRC = open(".bashrc", 'a')
 	bRC.write("\n# Open FOAM sources\nsource /opt/openfoam211/etc/bashrc\n")
 	bRC.close()
-	bRC = open(".bashrc", 'r')
+	
 	os.system("cp .bashrc ~/")
 
 	print "Source directories successfully updated."
@@ -62,13 +62,6 @@ def main():
 	print "# Reload the terminal (or type '. ~/.bashrc') to activate the changes.#"
 	print "#######################################################################"
 
-#	try: 
-#		os.system("icoFoam -help > /dev/null")
-#		print "Installation successfull."
-#	except:
-#		print "ERROR: Installation failed."
-#		print "See http://www.openfoam.org/download/ubuntu.php for details about the steps of the installation."
-#		sys.exit(1)
 
 
 
