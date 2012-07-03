@@ -60,7 +60,7 @@ def main():
 	print "\n#######################################################################"
 	print "# Installation script done.                                           #"
 	print "# Reload the terminal (or type '. ~/.bashrc') to activate the changes.#"
-	print "#######################################################################\n"
+	print "#######################################################################"
 
 #	try: 
 #		os.system("icoFoam -help > /dev/null")
