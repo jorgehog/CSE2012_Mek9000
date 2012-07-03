@@ -1,0 +1,13 @@
+WEEK 1
+
+-Completed installation of openFOAM
+-Scripted ubuntu-'installer' and a build tool for the tutorial setup
+-Progressed through tutorial 2.1 from http://www.openfoam.org/docs/user/cavity.php
+
+WEEK 2
+
+
+WEEK 3
+
+
+WEEK 4
