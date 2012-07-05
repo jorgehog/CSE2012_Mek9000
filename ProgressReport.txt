@@ -4,6 +4,15 @@ WEEK 1
 -Scripted ubuntu-'installer' and a build tool for the tutorial setup
 -Progressed through tutorial 2.1 from http://www.openfoam.org/docs/user/cavity.php
 
+-Simulations complete (channel):
+
+--OneEqEddy
+
+--Smagorinsky
+
+running atm: dynOneEqEddy
+problems with running: dynSmagorinsky (openFOAM complaints - can't find LES model with that name...)
+
 WEEK 2
 
 
