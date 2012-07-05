@@ -1,0 +1,70 @@
+\documentclass[a4paper,english,12pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{babel, verbatim}
+
+\begin{document}
+
+\title{Assignment 1 - A 2D Cavity}
+\maketitle
+\date{}
+
+In this project we will study \textbf{(usikker på bra fluidmekanisk beskrivelse)} using the open source \textit{OpenFOAM}. To install OpenFOAM on Ubuntu, simply run the installation scripts located in the \textit{folk.uio.no/....} folder. \textbf{(vet ikke hvordan du vil gjøre det)}
+
+If you do not have an Ubuntu machine, you can find a tutorial on how to build OpenFOAM from source on \textit{http://www.openfoam.org/download/source.php} (note: This is no simple matter).
+
+Once you have completed the installation, run the tutorial script to build the tutorial enviroment. In this enviroment you will find several examples, i.e. \textit{Cavity}, located in the \textit{incompressible/isoFoam/cavity} folder. This example will be the main focus of this first assignment.
+
+All pictures in this assignment is copied from OpenFOAM's own tutorial on cavity.
+
+
+\section{Getting to know the structures of OpenFOAM}
+
+OpenFOAM works in the following way: In your working directory, i.e. \textit{myCavityFolder}, you have two subfolders; \textit{system} and \textit{control}. These two folders together hold all the parameters OpenFOAM needs to know exactly what kind of system you want to simulate. The shape of the system\footnote{will later be refered to as the \textit{mesh}}, Reynolds number, timestep, simulation time, etc. are all given in these files. For simplicity we divide the process into three sub-categories:
+
+\begin{enumerate}
+ \item \textbf{Pre production:} Building the mesh and compiling it, seting initial parameters etc.
+ \item \textbf{Production:} Running the simulation, calculating values for every given write interval.
+ \item \textbf{Post production:} Analyzing the data using \textit{ParaFOAM}.
+\end{enumerate}
+
+
+\subsection{Pre production}
+
+Open the \textit{cavity/constant/polyMesh/blockMeshDict} file. This is the initialization file where OpenFOAM reads the geometry of the mesh. The \textit{vertices} dictionary\footnote{A dictionary in OpenFOAM is i.e. \textit{DICTIONARY\{\}}} holds the geometry of the system, where as the other dictionaries holds the information about the nature of the boundaries.
+
+Once the mesh is setup correctly, you build it by running 
+\begin{verbatim}
+ blockMesh
+\end{verbatim}
+
+from your main folder (i.e. \textit{myCavityFolder}). If the build was successful, a new folder will appear, called \textit{0}. The number describes the current time of the simulation. You can enter this folder and anter the initial conditions of the system, i.e. the energy, pressure etc. Once you start the production, new folders will appear with a name resembling the spesific point in the simulation when the data was written (i.e \textit{40} for \textit{t=40s}).
+
+\subsection{Production}
+
+Once your mesh is built, take a look at the initial condition for $p$ in the \textit{myCavityFolder/0/p} file. \textit{Dimensions} sets the dimension of the field to $m^2s^{-2}$, \textit{internalField uniform 0} sets the internal field of the cavity all equal to 0. The \textit{boundaryField} specifies the behaviour of the boundaries.
+
+In order to set physical parameters such as the kinematic vicosity, $\nu$, enter the \textit{myCavityFolder/constant/transportProperties} file. In this example $\nu=0.01$ in order to get a Regnolds number of $10$. 
+
+Now go to the \textit{myCavityFolder/system/controlDict}. Here you can alter the time step, start time, end time, when to write data to file, etc. Take a look at these values and familiarize yourself with them.
+
+To start the simulation, simply run
+\begin{verbatim}
+ isoFoam
+\end{verbatim}
+ from your main folder. After the simulation you will notice several folders appearing with their respective times.
+
+\subsection{Post production}
+
+As a post production tool we use \textit{ParaFOAM}. It is a visualisation tool tailored to work with OpenFOAM output. Run it by simply typing
+\begin{verbatim}
+ paraFoam
+\end{verbatim}
+from your main folder.
+
+TBC
+
+
+
+\end{document}
+
