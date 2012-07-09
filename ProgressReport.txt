@@ -10,8 +10,18 @@ WEEK 1
 
 --Smagorinsky
 
-running atm: dynOneEqEddy
-problems with running: dynSmagorinsky (openFOAM complaints - can't find LES model with that name...)
+--dynOneEqEddy
+
+Got solution to dynS.
+running atm: homogeniousDynSmagorinsky
+
+Started working on cylinder, found case, will check more thurely. 
+issue: Only half a cylinder?
+
+Started working on assignments. Uncertain about style, waiting for feedback.
+
+Familiarized with new concepts regarding the visualization of user spesific values (i.e. u-umean)
+
 
 WEEK 2
 
