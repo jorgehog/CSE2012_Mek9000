@@ -6,133 +6,142 @@
 \begin{document}
 
 \title{Assignment 1 - A 2D Cavity}
-\maketitle
+\author{}
 \date{}
+\maketitle
 
-In this project we will study \textbf{(usikker på bra fluidmekanisk beskrivelse)} using the open sourced software \textit{OpenFOAM}. To install OpenFOAM on Ubuntu, simply run the installation scripts located in the \textit{folk.uio.no/....} folder. \textbf{(vet ikke hvordan du vil gjøre det)}
 
-If you do not have an Ubuntu machine, you can find a tutorial on how to build OpenFOAM from source on \textit{http://www.openfoam.org/download/source.php} (note: This is no simple matter).
+In this project we will study \textbf{(usikker på bra fluidmekanisk beskrivelse)} using the open sourced software \textit{OpenFOAM}. To install OpenFOAM on Ubuntu, simply run the installation scripts provided on the course website. \textbf{(vet ikke hvordan du vil gjøre det)}
+
+If you do not have an Ubuntu machine, you can find a tutorial on how to build OpenFOAM from source on (note: This is no simple matter)
+
+\begin{verbatim}
+http://www.openfoam.org/download/source.php
+\end{verbatim}
 
 Once you have completed the installation, run the tutorial script to build the tutorial enviroment. In this enviroment you will find several examples, i.e. \textit{Cavity}, located in the \textit{incompressible/isoFoam/cavity} folder. This example will be the main focus of this first assignment.
 
-All pictures in this assignment is copied from OpenFOAM's own tutorial on cavity.
+It is recommended that you use the openFOAM cavity tutorial in parallel with the assignment. The tutorial can be found at
 
-
-\section{Getting to know the structures of OpenFOAM}
-
-OpenFOAM works in the following way: In your working directory, i.e. \textit{myCavityFolder}, you have two subfolders; \textit{system} and \textit{control}. These two folders together hold all the parameters OpenFOAM needs to know exactly what kind of system you want to simulate. The shape of the system\footnote{This will later be refered to as the \textit{mesh}.}, Reynolds number, timestep, simulation time, etc. are all given in these files. For simplicity we divide the process into three sub-categories:
-
-\begin{enumerate}
- \item \textbf{Pre production:} Building the mesh and compiling it, seting initial parameters etc.
- \item \textbf{Production:} Running the simulation, calculating values for every given write interval.
- \item \textbf{Post production:} Analyzing the data using \textit{ParaFOAM}.
-\end{enumerate}
-
-
-\subsection{Pre production}
-
-Open the \textit{cavity/constant/polyMesh/blockMeshDict} file. This is the initialization file where OpenFOAM reads the geometry of the mesh. The \textit{vertices} dictionary\footnote{A dictionary in OpenFOAM is on the form \textit{DICTIONARY\{parameters\}}.} holds the geometry of the system, where as the other dictionaries holds the information about the nature of the boundaries.
-
-Once the mesh is setup correctly, you build it by running 
 \begin{verbatim}
- blockMesh
+http://www.openfoam.org/docs/user/cavity.php
 \end{verbatim}
 
-from your main folder (i.e. \textit{myCavityFolder}). If the build was successful, a new folder will appear, called \textit{0}. The number describes the current time of the simulation. You can enter this folder and anter the initial conditions of the system, i.e. the energy, pressure etc. Once you start the production, new folders will appear with a name resembling the spesific point in the simulation when the data was written (i.e \textit{40} for \textit{t=40s}).
+\section*{Task 1}
+\subsection*{\textbf{a)}}
 
-\subsection{Production}
+Build a mesh of a  $0.1\times0.1\times0.01$ (in units of meters) box resembling a 2D cavity. Use a movable top wall, fixed sidewalls and empty front and back walls.
 
-Once your mesh is built, take a look at the initial condition for $p$ in the \textit{myCavityFolder/0/p} file. \textit{Dimensions} sets the dimension of the field to $m^2s^{-2}$, \textit{internalField uniform 0} sets the internal field of the cavity all equal to 0. The \textit{boundaryField} specifies the behaviour of the boundaries.
+\subsection*{\textbf{b)}}
 
-In order to set physical parameters such as the kinematic vicosity, $\nu$, enter the \textit{myCavityFolder/constant/transportProperties} file. In this example $\nu=0.01$ in order to get a Regnolds number of $10$. 
-
-Now go to the \textit{myCavityFolder/system/controlDict}. Here you can alter the time step, start time, end time, when to write data to file, etc. Take a look at these values and familiarize yourself with them.
-
-To start the simulation, simply run
-\begin{verbatim}
- isoFoam
-\end{verbatim}
- from your main folder. After the simulation you will notice several folders appearing with their respective times as names.
-
-\subsection{Post production}
-
-As a post production tool we use \textit{ParaFOAM}. It is a visualisation tool tailored to work with OpenFOAM output. Run it by simply typing
-\begin{verbatim}
- paraFoam
-\end{verbatim}
-from your main folder.
-
-Once you have opened the GUI, a list will appear on the left hand side named \textit{Pipeline Browser}. This will list all your currently open paraFoam simulations. The most important steps to familiarize with is
+Set boundary/initial conditions for \textit{p} and \textit{U} in the following manner:
 
 \begin{itemize}
- \item \textbf{The Eye} 
-
-Looking at your pipeline browser, you will notice an eye at the left hand side of each entry. Clicking the eye will toggle/untoggle the display option of the entry. 
-This is very handy if you have several manipulations of the same data open simultaneously, i.e. if you want to superpose two graphs representing the same values from different simulations.
-
-\item \textbf{Object Inspector::Properties tab}
-
-Every time you open a new data set or apply a new filtering to a current set, you will be asked to set some properties to initialize the process. 
-
-If you i.e. open your cavity simulation, you need to specify which \textit{Mesh Parts} you want to display. These mesh parts are the ones previously set in the \textit{blockMeshDict} file. 
-
-You can also select which fields you want to display from the \textit{Volume Fields} box. Once you have finished selecting properties, press \textit{Apply} to get started.
- 
-\item \textbf{Object Inspector::Display tab}
-
-Scrolling down you will find \textit{Style::Representation}. By standard this is set to \textit{Outline}. You will need to change this to visualize internal fields. Selecting \textit{Surface} yields a clean representation. To visualize fields, go up to the \textit{Color::Color by} box, select i.e. $\cdot p$, representing interpolated pressure. 
-
-You can use the \textit{Edit Color Map..} button to change the colorbar. Note that all you will see at this point is your initial values.
-
-\item \textbf{Play/Pause}
-
-At the top you notice a toolbar with standard play/pause buttons. Press play to progress through your simulation timesteps. You can use the up/down buttons to manually set a spesific time. 
-
-Sometimes when playing, you need to rescale your data to the new ranges at the current stage in the simulation. This is done by pressing \textit{Rescale to Data Range} in the Display tab.
-
-\item \textbf{Slice}
-
-Often when working with 3D meshes, it is more informative to look at a spesific plane in the simulation data. Directly above your pipiline browser you will find the slice icon. Clicking it opens up a new entry in the pipeline browser. Go to the properties tab and select your desired normal for the plane. If you want the frame to disappear, deselect the \textit{Show Plane} checkbox. Press apply to confirm. 
-
-\item \textbf{Filters}
-
-Filters include tools such as Contour, Stream Tracers, Vector Field Plot (Glyph), etc. These can be selected from the top application menu (where i.e. File$\rightarrow$save is located). 
-
-If you want to plot the vectors of \textit{U} on top of your slice, all you need to do is to highlight the slice in the pipeline browser, select Filters$\rightarrow$common$\rightarrow$Glyph, select desired properties and apply.
-
+ \item \textbf{p:} $\nabla p = 0 m^2/s^2$ on fixedwalls and moving walls. Empty walls should be given an empty condition. The internal field should be zero.
+ \item \textbf{U:} The internal field and sidewalls should be fixed zero. Front and back walls should be given an empty condition. The top wall should have a $1m/s$ condition in the x-direction, and zero elsewhere.
 \end{itemize}
 
-\section{Tasks}
+\vspace{0.5cm}
+Use a kinematic viscosity which yields a Reynolds number of 10. Use a timestep of $0.005 s$ and setup your controlDict is such a manner that you store values every $0.1 s$ from $0-0.5 s$.
 
-With these tools at hand, perform the following tasks
+Run the \textit{icoFoam} application and visualize the pressure field at $t=0.5 s$ using paraFOAM.
+
+\subsection*{\textbf{c)}}
 
 \begin{itemize}
- \item Build the mesh of the OpenFOAM cavity tutorial, run the simulation and open it in ParaFOAM.
- \item Select all mesh parts, and choose to display the interpolated pressure field as a surface.
- \item Play the simulation to the last time and rescale the data range.
- \item Create a Z-normal slice through the center (the middle will be given as standard placement).
- \item Apply a Glyph filter to the slice.
- \item Untoggle the display option (the eye) of the glyph plot.
- \item Select the Stream Tracer filter on the original cavity.OpenFOAM. Use \textit{Interpolator with Cell Locator}, an initial Step Length of 0.01 and set the \textit{Seed Type} equal to \textit{Line Source} in the properties tab, using the Y-axis. Use a resolution of 21.
- \item Select to display colors by interpolated pressure, press \textit{Edit Color Map}, select \textit{Choose Preset} and use \textit{Blue to Red Rainbow}. 
-Go to the \textit{Edit}$\rightarrow$\textit{ViewSettings}$\rightarrow$\textit{Choose Color} and select the backgroup using a white color.
-\item Get more significant lines by selecting a \textit{Tube} filter on the Stream Tracer. Experiment with different radii untill you are pleased with the visualization.
-
-You should end up with something resembling Fig.~\ref{fig:streamLineTubeTask1}. If you want a color bar, this is selected from the ``Edit Color Map''$\rightarrow$``Color Legend'' (tab)$\rightarrow$``Show Color Legend''(make sure you do not have white colored font on a white background).
+ \item Add a glyph filter displaying the interpolated pressure field on a slice of the $x,y$-plane.
+ \item Use a stream tracer filter to visualize the same values. 
+ \item Add a tube filter on top of the previous filter to get more significant lines.
 \end{itemize}
 
+\noindent
+You should end up with something resembling Fig.~\ref{fig:streamLineTubeTask1}.
 
 \begin{figure}[hbpt]
 \centering
 \includegraphics[scale=0.5]{StreamLineTubeTask1.jpg}
-\caption{Plot of the stream lines of the cavity tutorial using the Tube filter.}
+\caption{Plot of the stream lines of the cavity tutorial using the Stream Tracer and Tube filters.}
 \label{fig:streamLineTubeTask1}
 \end{figure}
 
 
-\section{Manipulating the structures of OpenFOAM}
+\section*{Task 2}
 
-\subsection{Refining the mesh}
+Create a new cavity case, copying your current \textit{control} and \textit{system} folders into a new directory called \textit{CavityFine}. Double the amount of cells in the $x$ and $y$ directions and rebuild the mesh. Map the old data from $t=0 s$ to $t=0.5 s$ on the new grid using the \textit{mapFields} tool. 
+
+\vspace{0.5cm}
+\noindent
+Configure the application to start from $t=0.5 s$ and end at $t=0.7 s$. Use a timestep of $0.0025 s$.
+
+\vspace{0.5cm}
+\noindent
+Run the icoFoam-application and visualize the refined data.
+
+\section*{Task 3}
+
+Introduce mesh grading to the cavity tutorial in a new case called \textit{CavityGrade}. Create 4 blocks, each with 10 cells in the $x$ and $y$ directions. The ratio between the largest and smallest cells should be two.
+
+\vspace{0.5cm}
+\noindent
+Change the time step to $2.5 ms$. Set the start time to $0.7 s$ and end time to $0.8 s$. Make sure your write interval is $0.1 s$ still.
+
+\vspace{0.5cm}
+\noindent
+Map the CavityFine values to the new mesh, run the application and visualize the results.
+
+\section*{Task 4}
+
+Open all three cases simultaneously in paraFOAM. Plot the distance from the cavity base vs. the  x-component of the velocity field for all different cases. Superpose the images and comment on the result. In order to retrieve the required quantities, you should run
+
+\begin{verbatim}
+ foamCalc components U
+\end{verbatim}
+
+\noindent
+in all the case folders. To open several simulations in paraFOAM simultaneously, you must first create an empty file called \textit{folderName.openFOAM} in the 'folderName' case folder. This empty file can be opened from paraFOAM.
+
+
+\section*{Task 5}
+
+Create a new case \textit{CavityHighRe}, and copy all the constituents of the original \textit{Cavity} folder into it. 
+
+\vspace{0.5cm}
+\noindent
+Increase the Reynolds number to 100 by reducing the kinematic viscosity by a factor 10.
+
+\vspace{0.5cm}
+\noindent
+Set the start time to $0.5 s$, the end time to $2 s$. 
+
+\vspace{0.5cm}
+\noindent
+Run the application and compare the velocityfield at $t=2 s$ with the result from the original low Reynolds number Cavity case.
+
+
+\section*{Task 6}
+
+Run a simulation of a high Reynolds number case ($10^4$) using a RAS-model with the following initial conditions
+
+\begin{itemize}
+ \item U and p as in the old case,
+ \item $k = 3.75\times 10^{-3} m^2/s^2,$
+ \item $\epsilon = 7.65\times 10^{-4} m^2/s^3.$
+\end{itemize}
+
+
+Use a time step of $0.005 s$ and end at $20 s$ and visualize the results at consecutive time steps. Comment on the evolution.
+
+\section*{Task 7}
+
+Prepare a new simulation of a cavity where a square block of length $0.04 m$ is removed from the bottom right corner of the mesh. Edit the blockMesh file and build the new mesh. Copy the files from the \textit{0}-folder into a \textit{0.5}-folder in order to map incosistent data from the original Cavity case onto the new grid.
+
+\vspace{0.5cm}
+\noindent
+Set up the \textit{cuttingPatches} and \textit{patchMap} dictionaries in the \textit{mapFields} dictionary to prepare for the incosistent maping. When you are done, run the \textit{mapFields} with th original Cavity case as a source.
+
+\vspace{0.5cm}
+\noindent
+Visualize the fields. You will notice the solution around the clipped box does not suit the new case. Manually access these values and zero them out. Visualize the results again.
 
 
 
