@@ -25,6 +25,17 @@ Familiarized with new concepts regarding the visualization of user spesific valu
 
 WEEK 2
 
+-Rewrote cavity assignment
+-Started writing on channel assignment
+
+-All LES model simulations complete:
+--OneEqEddy
+--dynOneEqEddy
+--Smagorinsky
+--homogeneousDynSmagorinsky
+--dynLagrangian
+
+-All LES models produce "reasonable results" in comparison with eachother.
 
 WEEK 3
 
