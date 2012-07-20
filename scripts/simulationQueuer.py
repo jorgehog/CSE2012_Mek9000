@@ -30,13 +30,14 @@ class parameters:
     """
     Struct-like class for keeping track of different parameter setups.
     """
-    def __init__(self, deltaT, endTime, writeInterval = -1, runTimeMod = False, outputToFile = False):
-        self.deltaT, self.endTime, self.writeInterval, self.runTimeModifiable = \
-            deltaT, endTime, writeInterval, runTimeMod
+    def __init__(self, deltaT, endTime, writeInterval = -1, runTimeMod = False):
+        self.deltaT, self.endTime= deltaT, endTime
         
         #If no interval is given, the simulation is set to dump data every 0.5 sec
         if writeInterval == -1:
             self.writeInterval = int(0.5/deltaT);
+        if not runTimeMod:
+            self.runTimeModifiable = 'false'
 
 
 
@@ -162,7 +163,7 @@ for i in range(len(LESModels)):
         rawControlDict += line
 
     controlDict.close()
-    controlDict = open("%s/constant/LESProperties" % subDir, 'w');
+    controlDict = open("%s/system/controlDict" % subDir, 'w');
     controlDict.write(rawControlDict)
     controlDict.close()
 
@@ -179,7 +180,7 @@ for i in range(len(LESModels)):
             rawParaDict += line;
 
         paraDict.close()
-        paraDict = open("%s/constant/LESProperties" % subDir, 'w');
+        paraDict = open("%s/constant/decomposeParDict" % subDir, 'w');
         paraDict.write(rawParaDict)
         paraDict.close()
         
@@ -187,7 +188,7 @@ for i in range(len(LESModels)):
         os.system("decomposePar -case " + subDir + (" > %s/Output/decomposeParOut_sim%d.txt" % (masterDir, i))*outputToFile)
         
         print "Solving..."
-        os.system(("mpirun -np %d" % nCores) + solver + " -parallel" + " -case " + subDir + \
+        os.system(("mpirun -np %d " % nCores) + solver + " -parallel" + " -case " + subDir + \
                       (" > %s/Output/SolverOut_sim%d.txt" % (masterDir, i))*outputToFile)
         
         print "Reconstructing mesh values"
