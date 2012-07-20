@@ -187,7 +187,7 @@ for i in range(len(LESModels)):
         os.system("decomposePar -case " + subDir + (" > %s/Output/decomposeParOut_sim%d.txt" % (masterDir, i))*outputToFile)
         
         print "Solving..."
-        os.system(("mpirun -np %d" % nCores) + solver + " -parallel" + " -case " + subdir + \
+        os.system(("mpirun -np %d" % nCores) + solver + " -parallel" + " -case " + subDir + \
                       (" > %s/Output/SolverOut_sim%d.txt" % (masterDir, i))*outputToFile)
         
         print "Reconstructing mesh values"
