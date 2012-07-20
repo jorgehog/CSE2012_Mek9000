@@ -56,13 +56,6 @@ outputToFile = True
 LESModels = ['oneEqEddy', 'Smagorinsky','homogeneousDynSmagorinsky', 'dynLagrangian']
 Parameters = [parameters(dt, endTime), parameters(dt, endTime), parameters(dt, endTime), parameters(dt, endTime)]
 
-#Prepare Runtime
-if outputToFile:
-    os.system("mkdir %s/Output" % masterDir)
-
-if case == 'Cylinder':
-    solver = "pimpleFoam"
-
 ######################################
 
 
@@ -109,6 +102,15 @@ if quit:
     sys.exit(1);
 
 ##################################
+
+
+
+#Prepare Runtime
+if outputToFile:
+    os.system("mkdir %s/Output" % masterDir)
+
+if case == 'Cylinder':
+    solver = "pimpleFoam"
 
 
 
