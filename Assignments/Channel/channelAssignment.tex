@@ -11,19 +11,15 @@
 \maketitle
 
 
-In this project we will study \textbf{(usikker på bra fluidmekanisk beskrivelse)} using openFOAM using different Large Eddy Simulation (LES) models.
+In this project we will study \textbf{(usikker på bra fluidmekanisk beskrivelse)} using different Large Eddy Simulation models in openFOAM.
 
-As a starting point you should use the 
+As a starting point you should use the case provided in the tutorials
 
 \begin{verbatim}
 /.../tutorials/incompressible/channelFoam/channel395
 \end{verbatim}
 
-\noindent
-example.
-
-For every new LES model you study, create a new folder structure for it. You are going to need the results from all models in order to compare the results later. 
-
+Save the different LES model simulations each their own respective folders, so you can access to all the data for later comparisons.
 
 \section*{One Equation Eddy}
 
@@ -47,14 +43,14 @@ www.openfoam.org/docs/user/running-applications-parallel.php
 \end{verbatim}
 
 \noindent
-for details.
+for details. The essence is to create a \verb+decomposePar+ file in the \verb+system+ folder, where you set the number of cores, decomposition method etc., before running the \verb+decomposePar+ program from your main directory. You can start the process by typing i.e. \verb+mpirun -np 4 channelFoam -paralell+ on a quad-core machine.
 
 \subsection*{\textbf{b)}}
 
-Open the simulation in paraFOAM. Select U, p and UMean values, and make a slice in the middle of the channel with a $Z$-normal, choose to display the interpolated velocity field and play the simulation to the endpoint.
+Open the simulation in paraFOAM. Select U, p and UMean\footnote{The zeroth time folder may not containt the value of UMean. If this is the case, select the \textit{Skip Zero Time} checkbox before selecting mesh parts and vector fields.} values, and make a slice in the middle of the channel with a $Z$-normal. Display the interpolated velocity field and play the simulation to the endpoint.
 
 On the slice, apply a \textit{calculator} tool by either going through \vspace{0.5cm}\\\verb+filters+$\rightarrow$\verb+alphabetical+$\rightarrow$\verb+calculator+\\ 
-\vspace{0.5cm} 
+
 \noindent
 or press the calculator icon next to the slice-tool. Choose a reasonable name and select to calculate 
 
@@ -62,13 +58,13 @@ or press the calculator icon next to the slice-tool. Choose a reasonable name an
  U - UMean.
 \end{verbatim}
 
-Once you have applied the calculator tool, go to the display tab and select \textit{Colour by} the name of the value you created with the calculator. Select magitude and play the simulation again\footnote{You might run into problems with segmentation faults at this point. OpenFOAM does not store the averages for the zeroth time. If this is a problem, at the initial properties tab, select \textit{Skip Zero Time}, move the simulation to the first time step, and then select the preferred values for the visualization.}.
+Once you have applied the calculator tool, go to the display tab and select \textit{Colour by} the magnitude of the new vector created by the calculator. Replay the simulation.
 
-\textbf{More exercises needs to be added}
+\textbf{More turbulence exercises needs to be added}
 
 \section*{Smagorinsky}
 
-In order to do the switching you need to change the \verb+LESProperties+ file
+In order to switch LES model, you need to change the \verb+system/LESProperties+ file to
 
 \begin{verbatim}
 LESModel        Smagorinsky;
@@ -93,7 +89,6 @@ dynOneEqEddyCoeffs
     filter          simple;
 }
 
-need the one eq eddy coeffs too?
 
 \end{verbatim}
 
@@ -101,9 +96,9 @@ need the one eq eddy coeffs too?
 Retrace the steps of the One Equation Eddy section.
 
 
-\section*{Homogeneous Dynimic Smagorinsky}
+\section*{Homogeneous Dynamic Smagorinsky}
 
-Add the following to the \verb+LESProperties+ file:
+Perform another switch by replacing the LESModel keyword and add necessary coefficients:
 
 \begin{verbatim}
 LESModel        homogeneousDynSmagorinsky;
@@ -116,7 +111,6 @@ homogeneousDynSmagorinskyCoeffs
     filter simple;
 }
 
-the same as dynOneEqEddy??
 
 \end{verbatim}
 
@@ -127,7 +121,7 @@ Retrace the steps of the previous sections.
 
 \section*{Dynamic Lagrangian}
 
-This time we need to give additional information beyond the single file. Add the following to the \verb+LESProperties+ file:
+Update the LESModel with coefficients as below:
 
 \begin{verbatim}
 LESModel        dynLagrangian;
@@ -141,11 +135,10 @@ dynLagrangianCoeffs
     theta 1.5;
 }
 
-CE same for all?
 
 \end{verbatim}
 
-In addition you will need some initial conditions for the \verb+fmm+ and \verb+flm+ values. Enter the \verb+0+ dictionary (after mesh is built) and add the files on the following pages.
+The dynamic Lagrangian model needs, in addition to coefficients, \textit{fmm} and \textit{flm} fields with initial conditions. Enter the \verb+0+ dictionary (after mesh is built) and add the files on the following pages.
 
 \newpage
 \tiny
@@ -218,7 +211,7 @@ boundaryField
     }
 }
 
-// ************************************************** *********************** //
+// ************************************************************************* //
 
 \end{verbatim}
 \newpage
@@ -293,10 +286,53 @@ boundaryField
     }
 }
 
-// ************************************************** *********************** // 
+// ************************************************************************* // 
 \end{verbatim}
 
 \normalsize
+
+\newpage
+
+You will also need to provide solvers and schemes for doing calculations with these values. Enter the \verb+system/fvSolution+ dictionary and add the following solvers to the \verb+solvers+ dictionary
+
+\begin{verbatim}
+solvers
+{
+...
+
+    flm
+    {
+        solver PBiCG;
+        preconditioner DILU;
+        tolerance 1e-05;
+        relTol 0;
+    }
+
+    fmm
+    {
+        solver PBiCG;
+        preconditioner DILU;
+        tolerance 1e-05;
+        relTol 0;
+    }
+
+...
+}
+\end{verbatim}
+
+Now enter the \verb+system/fvSchemes+ and add the following to the \verb+divSchemes+ dictionary:
+
+\begin{verbatim}
+divSchemes
+{
+...
+
+    div(phi,flm) Gauss limitedLinear 1;
+    div(phi,fmm) Gauss limitedLinear 1;
+
+...
+}
+\end{verbatim}
 
 \noindent
 You should now be able to run the application. Retrace the steps of the previous sections.
@@ -305,8 +341,14 @@ You should now be able to run the application. Retrace the steps of the previous
 \newpage
 \section*{Comparing results with DNS}
 
-\textbf{Need more info}
+Open all the channelFoam cases in paraFOAM simultaneously. In order to do this, create blank files \verb+myFolderName.OpenFOAM+ by using i.e. the UNIX \textit{touch} command from the terminal:
 
-...
+\begin{verbatim}
+touch myFolderName.OpenFOAM
+\end{verbatim} 
+
+You should now be able to select this file from the paraFOAM open tool. To split the display window into seperate parts, simply select the preferred split from the icons in the upper right corner of the display window. Pressing a window will select it. When a window is selected, you can toggle which parts you want to display by clicking the eye icons in the pipeline browser as in the previous assignment.
+
+\textbf{NEED TO ADD SPESIFICS ABOUT THE COMPARISON}
 \end{document}
 
