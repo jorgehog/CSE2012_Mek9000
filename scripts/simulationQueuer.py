@@ -3,6 +3,7 @@ import sys, os, time
 
 
 
+
 ############### DESCRIPTION ################
 """
 -Set case, and make sure you have a libfolder for it in the same dir as this file, i.e. dirCylinder for case Cylinder.
@@ -46,15 +47,40 @@ class parameters:
 
 nCores = 2; #number of processor cores aviable
 case = "Cylinder"
-
-dt = 0.0025;
-endTime = 20;
 outputToFile = True
 
 
 #Set different parameters for different models (order respective to LESModels list)
-LESModels = ['oneEqEddy', 'Smagorinsky','homogeneousDynSmagorinsky', 'dynLagrangian']
-Parameters = [parameters(dt, endTime), parameters(dt, endTime), parameters(dt, endTime), parameters(dt, endTime)]
+
+#LESModels = [
+#	'oneEqEddy', 
+#	'Smagorinsky',
+#	'homogeneousDynSmagorinsky', 
+#	'dynLagrangian'
+#	]
+
+#Parameters = [
+#	parameters(dt=, endTime=), 
+#	parameters(dt=, endTime=), 
+#	parameters(dt=, endTime=), 
+#	parameters(dt=, endTime=)
+#	]
+
+
+LESModels = [
+	'dynLagrangian', 
+	'homogeneousDynSmagorinsky', 
+	'homogeneousDynSmagorinsky',
+	'homogeneousDynSmagorinsky'
+	]
+
+Parameters = [
+	parameters(deltaT = 0.0025, endTime=20.0), 
+	parameters(deltaT = 0.0025, endTime=20.0), 
+ 	parameters(deltaT = 0.001, endTime=15.0), 
+	parameters(deltaT = 0.0005, endTime=10.0), 	
+	parameters(deltaT = 0.0001, endTime=5.0),
+	]
 
 ######################################
 
@@ -193,7 +219,7 @@ for i in range(len(LESModels)):
         print "Reconstructing mesh values"
         os.system("reconstructPar -case " + subDir + (" > %s/Output/reconstructParOut_sim%d.txt" % (masterDir, i))*outputToFile)
     else:
-        os.sysem(solver + " -case " + subDir + (" > %s/Output/SolverOut_sim%d.txt" % (masterDir, i))*outputToFile)
+        os.system(solver + " -case " + subDir + (" > %s/Output/SolverOut_sim%d.txt" % (masterDir, i))*outputToFile)
 
     print "Finished.\n"
 
