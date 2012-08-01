@@ -10,8 +10,17 @@
 \date{}
 \maketitle
 
-\section*{...}
+In this assignment we will study \textbf{usikker på rett beskrivelse} ... 
 
+\section*{Generating the mesh}
+
+In the example aviable from \textbf{usikker på hvordan du vil ordne dette} you will find a highly refined cylinder mesh. Running simulations on this mesh will take extremely long, but complex
+geometries often demand high mesh resolutions to generate reasonable results. However, since we know the exact geometry, we can make controlled compromisses to the mesh. 
+
+For the case of a cylinder, we will need the most resolution around the cylinder itself as well as in the region behind it where the turbulent flow will dominate. 
+Using graded mesh refinement we can accomplish this by making the cells closer to the center smaller than the ones on the boundaries. The mesh blocks are placed in such a way that they make
+up a \textit{scandinavian flag}. Run \verb+blockmesh+ on the provided case and visualize the mesh in paraFOAM using the \textit{wireframe} display option on a slice through the circular 
+cylinder plane.
 
 
 
